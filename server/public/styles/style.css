@@ -8,7 +8,9 @@ h1 {
 }
 
 .input-div {
-  margin: 50px;
+}
+
+.row-parent-div {
   width: auto;
   display: flex;
   flex-direction: row;
@@ -17,19 +19,19 @@ h1 {
 }
 
 input {
-  width: 100px;
-  padding: 10px;
+  width: 133px;
+  padding: 12px;
 
   display: block;
-  margin: 5px;
+  margin: 10px;
 }
 
 button {
-  padding: 10px;
+  padding: 12px;
   width: 40px;
   font-weight: 900;
   background-color:rgb(199, 212, 218);
 
   display: block;
-  margin: 5px;
+  margin: 10px;
 }

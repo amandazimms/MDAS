@@ -15,19 +15,36 @@
   <h1>L  E  T  '  S</h1>
   <h1>C A L C U L A T E</h1>
 
+  <br><br>
+  
   <div class="input-div">
-    <input class="num-input" id="first-num-input" type="number" placeholder="number"/>
-    
-    <button class="math-button" id="add-button">+</button>
-    <button class="math-button" id="subtract-button">-</button>
-    <button class="math-button" id="multiply-button">*</button>
-    <button class="math-button" id="divide-button">/</button>
-    
-    <input class="num-input" id="second-num-input" type="number" placeholder="number"/>
-    
-    <button class="math-button" id="submit-button">=</button>
-    <button class="math-button" id="clear-button">c</button>
-
+    <div class="row-parent-div">
+      <input class="num-input" id="num-input" type="text" placeholder="equation"/>
+      <button class="math-button" id="clear-button">c</button>
+    </div>  
+    <div class="row-parent-div">
+      <button class="number-button" id="7-button">7</button>
+      <button class="number-button" id="8-button">8</button>
+      <button class="number-button" id="9-button">9</button>
+      <button class="math-button" id="add-button">+</button>
+    </div>
+    <div class="row-parent-div">
+      <button class="number-button" id="4-button">4</button>
+      <button class="number-button" id="5-button">5</button>
+      <button class="number-button" id="6-button">6</button>
+      <button class="math-button" id="subtract-button">-</button>
+    </div>
+    <div class="row-parent-div">
+      <button class="number-button" id="1-button">1</button>
+      <button class="number-button" id="2-button">2</button>
+      <button class="number-button" id="3-button">3</button>
+      <button class="math-button" id="multiply-button">*</button>
+    </div>
+    <div class="row-parent-div">
+      <button class="number-button" id="0-button">0</button>
+      <button class="number-button" id=".-button">.</button>
+      <button class="math-button" id="submit-button">=</button>
+      <button class="math-button" id="divide-button">/</button>    
   </div>
   <div class="output-div">
     <ul id="equation-history">
