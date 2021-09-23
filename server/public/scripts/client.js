@@ -2,54 +2,26 @@ $(document).ready(onReady);
 
 function onReady(){
   $('button').each( function(index, value) { //loop through all buttons
-    $( `#${this.id}`).on('click', //for each one, on click, assign them to...
+    if (this.id !== "equals-button" && this.id !== "clear-button") { //(skipping these two buttons, which behave differently)
+      $( `#${this.id}`).on('click', //for each one, on click, assign them to...
         { parameter: this.dataset.id }, addToInputField //run this function, with their data-id as the parameter
       );
+    }
   });
+  $( '#equals-button' ).on( 'click', submitEquation );
+  $( '#clear-button' ).on( 'click', clearFields );
 }
 
 function addToInputField(value) {
-  let equationVisualizer = $( '#equation-visualizer' );
-  let equationVal = equationVisualizer.val();
+  //function that receives the button's value (3, ., *, etc) and adds it to the readonly input ('visualization') area
 
-  equationVal += value.data.parameter;
+  let equationVisualizer = $( '#equation-visualizer' ); //get the visualization area
+  let equationVal = equationVisualizer.val(); //and its value
 
-  equationVisualizer.val(equationVal);
-  
-  console.log(value.data.parameter);
+  equationVal += value.data.parameter; //add to the end of that val, the new value (button that was just pressed)
+  equationVisualizer.val(equationVal); //and (re)set the value to this new, longer value
 }
 
-//   $( '#submit-button' ).on( 'click', submitEquation )
-
-//   $( '#add-button' ).on( 'click', selectAddAsOperator );
-//   $( '#subtract-button' ).on( 'click', selectSubtractAsOperator );
-//   $( '#multiply-button' ).on( 'click', selectMultiplyAsOperator );
-//   $( '#divide-button' ).on( 'click', selectDivideAsOperator );
-
-//   $( '#clear-button' ).on( 'click', clearFields );
-// }
-
-// //THIS IS NOT DRY but I can't figure out how to pass a parameter with .on('click');
-// //and I don't care much because the stretch goals look very different anyway
-// function selectAddAsOperator() { //update global var & visuals to show that the add button is 'down' 
-//   operatorSelected = operators[0]; 
-//   selectedButtonDarker( $(this) );
-// }
-
-// function selectSubtractAsOperator() { //update global var & visuals to show that the subtract button is 'down'
-//   operatorSelected = operators[1]; 
-//   selectedButtonDarker( $(this) );
-// }
-
-// function selectMultiplyAsOperator() { //update global var & visuals to show that the multiply button is 'down'
-//   operatorSelected = operators[2]; 
-//   selectedButtonDarker( $(this) );
-// }
-
-// function selectDivideAsOperator() { //update global var & visuals to show that the divide button is 'down'
-//   operatorSelected = operators[3];
-//   selectedButtonDarker( $(this) );
-// }
 
 // function selectedButtonDarker(theThis){
 //   //function to make all buttons except 'this' go back to their normal color,
@@ -59,71 +31,73 @@ function addToInputField(value) {
 //   theThis.css('background-color', '#7FA5B6');
 // }
 
-// function clearFields(){
-//   //function to clear input fields of numbers
-//   $( '.num-input' ).val('')
-//   //also 'clears' the 'down' effect of any operator buttons pushed
-//   selectedButtonDarker( $(this) );
-// }
+function clearFields(){
+  //function to clear input fields of numbers
+  $( '#equation-visualizer' ).val('')
+}
 
 
-// function submitEquation() {
-//   //function that collects inputs, puts them in an object, and sends them to server
-//   //it does not do the actual calculating (the server does).
+//todo start checking from here - this is new after stretch goals
+//note - could use .split() method and use any/all of the operators as a separator,
+//then we would have all the numbers as their own spots in the array, no matter how long...  
 
-//   let firstNum = $('#first-num-input').val(); //get number values
-//   let secondNum = $('#second-num-input').val(); //get number values
+function submitEquation() { //called from equals button
+  //function that collects input, puts them in an object, and sends them to server
+  //it does not do the actual calculating (the server does).
 
-//   let equationToSend = {
-//     firstNumber: firstNum,
-//     operator: operatorSelected, //didn't need to 'get' this since it's global
-//     secondNumber: secondNum,
-//     answer: 0
-//   }
+  let firstNum = $('#first-num-input').val(); //get number values
+  let secondNum = $('#second-num-input').val(); //get number values
 
-//   $.ajax ({ //hey ajax...
+  let equationToSend = {
+    firstNumber: firstNum,
+    operator: operatorSelected, //didn't need to 'get' this since it's global
+    secondNumber: secondNum,
+    answer: 0
+  }
 
-//     method: 'POST', //do a "POST" to server
-//     url: '/equations', //specifically, on the /equations area
-//     data: equationToSend //send it our equation object
+  $.ajax ({ //hey ajax...
 
-//   }).then ( function(response) { //if that was successful...
+    method: 'POST', //do a "POST" to server
+    url: '/equations', //specifically, on the /equations area
+    data: equationToSend //send it our equation object
 
-//     getEquations(); //update the DOM with the history of previous equations (including this one)
-//     $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
-//     selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
+  }).then ( function(response) { //if that was successful...
 
-//   }).catch ( function(err) { //if that was not successful...
+    getEquations(); //update the DOM with the history of previous equations (including this one)
+    $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
+    selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
 
-//     alert('error sending equation'); //alert us
-//     console.log('error:', err);
-//   });
-// }
+  }).catch ( function(err) { //if that was not successful...
 
-// function getEquations() {
-//   //function that gets all the equations we've done from the server
-//   //and displays them on the dom like any normal calculator would ;)
+    alert('error sending equation'); //alert us
+    console.log('error:', err);
+  });
+}
 
-//   $.ajax ({ //hey ajax...
+function getEquations() {
+  //function that gets all the equations we've done from the server
+  //and displays them on the dom like any normal calculator would ;)
 
-//     method: 'GET', //do a "GET" from server
-//     url: '/equations' //specifically, on the /equations area
+  $.ajax ({ //hey ajax...
 
-//   }).then ( function(response) { //if that was successful...
+    method: 'GET', //do a "GET" from server
+    url: '/equations' //specifically, on the /equations area
 
-//     let equationHistory = $("#equation-history"); //get the output area where we want to display things on the DOM
-//     equationHistory.empty(); //empty it out from whatever was appended there last time, so we don't have any duplicating
+  }).then ( function(response) { //if that was successful...
 
-//     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
-//       equationHistory.append( //append them to this appropriate area
-//         `<li>${response[i].firstNumber} ${response[i].operator} ${response[i].secondNumber} = ${response[i].answer}</li>
-//         `);
-//     };
+    let equationHistory = $("#equation-history"); //get the output area where we want to display things on the DOM
+    equationHistory.empty(); //empty it out from whatever was appended there last time, so we don't have any duplicating
 
-//   }).catch( function(err) { //if that was not successful...
+    for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
+      equationHistory.append( //append them to this appropriate area
+        `<li>${response[i].firstNumber} ${response[i].operator} ${response[i].secondNumber} = ${response[i].answer}</li>
+        `);
+    };
 
-//     alert('error getting equation history'); //alert us
-//     console.log('error:', err)
+  }).catch( function(err) { //if that was not successful...
 
-//   });
-//}
+    alert('error getting equation history'); //alert us
+    console.log('error:', err)
+
+  });
+}
