@@ -1,5 +1,5 @@
 body {
-  background-color: rgb(211, 225, 231);
+  background-color: rgb(228, 236, 240);
   font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
 }
 
@@ -28,6 +28,7 @@ button {
   padding: 10px;
   width: 40px;
   font-weight: 900;
+  background-color:rgb(199, 212, 218);
 
   display: block;
   margin: 5px;
