@@ -25,3 +25,30 @@ app.get('/', (req, res) => { //our 2 arguments req and res (remember they're alp
   console.log('get route hit'); //anytime someone goes to localhost:5000 in their browser, this will appear in our console here.
   res.send('meow'); //anytime someone goes to localhost:5000 in their browser, they will see this on the page
 });
+
+//EQUATIONS
+app.post( '/equations', ( req, res ) => {
+  res.sendStatus( 200 );
+
+  let answer;
+  //req.body is the following object!  { firstNumber: '3', secondNumber: '1', operator: '+' }
+  switch (req.body.operator){
+    case '+':
+      answer = Number(req.body.firstNumber) + Number(req.body.secondNumber);
+      break;
+    case '-':
+      answer = Number(req.body.firstNumber) - Number(req.body.secondNumber);
+      break;
+     case '*':
+      answer = Number(req.body.firstNumber) * Number(req.body.secondNumber);
+      break;
+    case '/':
+      answer = Number(req.body.firstNumber) / Number(req.body.secondNumber);
+      break;
+    default:
+      console.log('error: invalid operator');
+  }
+
+  console.log('the answer is:', answer);
+});
+

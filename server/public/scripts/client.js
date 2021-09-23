@@ -12,9 +12,6 @@ function onReady(){
   $( '#divide-button' ).on( 'click', selectDivideAsOperator);
 }
 
-//When the submit (`=` button) is clicked, capture this input,
-// bundle it up in an object, and send this object to the server via a POST.
-
 //THIS IS NOT DRY but I can't figure out how to pass a parameter with .on('click');
 //and I don't care much because the stretch goals look very different anyway
 function selectAddAsOperator() {
@@ -47,7 +44,31 @@ function submitEquation() {
   let firstNum = $('#first-num-input').val();
   let secondNum = $('#second-num-input').val();
 
+  console.log('operators?', operators);
+  console.log('operatorSelected?', operatorSelected);
+
+  let equationToSend = {
+    firstNumber: firstNum,
+    secondNumber: secondNum,
+    operator: operatorSelected
+  }
+
+  $.ajax ({
+    method: 'POST',
+    url: '/equations',
+    data: equationToSend
+  }).then ( function(response) {
+    //if successful... update Dom
+    //todo getEquations(); ?
+    $( '.num-input' ).val('');
+  }).catch ( function(err) {
+    alert('error sending equation');
+    console.log('error:', err);
+  });
+
+ 
+
+
   selectedButtonDarker( $(this) );
-  console.log('operator selected', operatorSelected);
 }
 
