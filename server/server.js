@@ -10,7 +10,7 @@ app.use( bodyParser.urlencoded( { extended: true } ) );
 
 //global vars
 const port = 5000; 
-
+let equationHistory = [];
 
 //spin up server
 app.listen(port, ()=> { //we will use arrow functions on server side
@@ -23,32 +23,38 @@ app.listen(port, ()=> { //we will use arrow functions on server side
 //HOMEPAGE
 app.get('/', (req, res) => { //our 2 arguments req and res (remember they're alphabetical!) to pass to this arrow function...
   console.log('get route hit'); //anytime someone goes to localhost:5000 in their browser, this will appear in our console here.
-  res.send('meow'); //anytime someone goes to localhost:5000 in their browser, they will see this on the page
+  //res.send('meow'); //anytime someone goes to localhost:5000 in their browser, they will see this on the page
 });
 
-//EQUATIONS
+
+//EQUATIONS-GET
+app.get( '/equations', ( req, res ) => {
+  console.log("i'm about to send this equation history:", equationHistory);
+  res.send( equationHistory );
+});
+
+
+//EQUATIONS-POST
 app.post( '/equations', ( req, res ) => {
   res.sendStatus( 200 );
 
-  let answer;
   //req.body is the following object!  { firstNumber: '3', secondNumber: '1', operator: '+' }
   switch (req.body.operator){
     case '+':
-      answer = Number(req.body.firstNumber) + Number(req.body.secondNumber);
+      req.body.answer = Number(req.body.firstNumber) + Number(req.body.secondNumber);
       break;
     case '-':
-      answer = Number(req.body.firstNumber) - Number(req.body.secondNumber);
+      req.body.answer = Number(req.body.firstNumber) - Number(req.body.secondNumber);
       break;
      case '*':
-      answer = Number(req.body.firstNumber) * Number(req.body.secondNumber);
+      req.body.answer = Number(req.body.firstNumber) * Number(req.body.secondNumber);
       break;
     case '/':
-      answer = Number(req.body.firstNumber) / Number(req.body.secondNumber);
+      req.body.answer = Number(req.body.firstNumber) / Number(req.body.secondNumber);
       break;
     default:
       console.log('error: invalid operator');
   }
 
-  console.log('the answer is:', answer);
+  equationHistory.push(req.body);
 });
-
