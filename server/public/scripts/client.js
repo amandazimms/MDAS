@@ -45,33 +45,44 @@ function submitEquation() { //called from equals button
   //function that collects input, puts them in an object, and sends them to server
   //it does not do the actual calculating (the server does).
 
-  let firstNum = $('#first-num-input').val(); //get number values
-  let secondNum = $('#second-num-input').val(); //get number values
+  let val = $( '#equation-visualizer' ).val();
 
-  let equationToSend = {
-    firstNumber: firstNum,
-    operator: operatorSelected, //didn't need to 'get' this since it's global
-    secondNumber: secondNum,
-    answer: 0
-  }
+  let regExofOperators = /(?=[\/\+\*\-])|(?<=[\/\+\*\-])/; //define a list of our operators using regEx
+  //breakdown of this regEx:  [] means match anything inside here. 
+                          //  every \ is escaping so that the special chars like + and / can be read as the plain old character, not a fancy js thing.
+                          //  the ?=() and ?<=() allow the .split to work by including the separator (+, *) in the resulting array.
+                          //    this is the most liquid understanding for me now - why do we need both '?=' and '?<=' ? I don't know, but it works. 
+                          //  the | works like or: match either the thing before or the thing after
+                          //  regexes always start and end with /'s
 
-  $.ajax ({ //hey ajax...
+  let valArray = val.split(regExofOperators); //split the string into an array, using operators as the 'splitpoint'
+  //example: '7*33/99.99' becomes ['7', '*', '3', '/', '99.99']
+  
 
-    method: 'POST', //do a "POST" to server
-    url: '/equations', //specifically, on the /equations area
-    data: equationToSend //send it our equation object
+  // let equationToSend = {
+  //   firstNumber: firstNum,
+  //   operator: operatorSelected, //didn't need to 'get' this since it's global
+  //   secondNumber: secondNum,
+  //   answer: 0
+  // }
 
-  }).then ( function(response) { //if that was successful...
+  // $.ajax ({ //hey ajax...
 
-    getEquations(); //update the DOM with the history of previous equations (including this one)
-    $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
-    selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
+  //   method: 'POST', //do a "POST" to server
+  //   url: '/equations', //specifically, on the /equations area
+  //   data: equationToSend //send it our equation object
 
-  }).catch ( function(err) { //if that was not successful...
+  // }).then ( function(response) { //if that was successful...
 
-    alert('error sending equation'); //alert us
-    console.log('error:', err);
-  });
+  //   getEquations(); //update the DOM with the history of previous equations (including this one)
+  //   $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
+  //   selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
+
+  // }).catch ( function(err) { //if that was not successful...
+
+  //   alert('error sending equation'); //alert us
+  //   console.log('error:', err);
+  // });
 }
 
 function getEquations() {
