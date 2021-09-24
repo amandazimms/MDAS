@@ -58,9 +58,10 @@ function submitEquation() { //called from equals button
   let valArray = val.split(regExofOperators); //split the string into an array, using operators as the 'splitpoint'
   //example: '7*33/99.99' becomes ['7', '*', '3', '/', '99.99']
 
-  equationValidator(valArray);
-  //if (equationValidator(valArray)){ //run the equation through our validation function, which will check for problems like two operators in a row, etc. 
-      //if it passes, continue (send it to server, etc)
+  if (equationValidator(valArray)){ //run the equation through our validation function, which will check for problems like two operators in a row, etc. 
+    alert("congrats, equation is valid");
+  
+    //if it passes, continue (send it to server, etc)
 
       //todo - need to update everything in this if statement to work with the stretch goals:
       // let equationToSend = {
@@ -88,7 +89,7 @@ function submitEquation() { //called from equals button
       //   console.log('error:', err);
       // });
   //}
-  
+  }
 }
 
 function equationValidator(valueArray){
@@ -101,6 +102,7 @@ function equationValidator(valueArray){
   if(valueArray[0].match(operatorsRegEx) || valueArray[valueArray.length-1].match(operatorsRegEx) ){
     console.log('ERROR: begins or ends with operator');
     alert('ERROR: cannot begin or end equation with an operator');
+    return false;
   }
 
   else { //made this an else rather than running it every time - otherwise multiple errors = multiple alerts, and user can be overwhelmed?
@@ -110,26 +112,30 @@ function equationValidator(valueArray){
           if ( valueArray[i].match(operatorsRegEx) && valueArray[i+1].match(operatorsRegEx) ){ //check if this, and the next item, are both operators
             console.log('ERROR: two operators in a row');
             alert('ERROR: cannot enter two operators in a row');
+            return false;
           }  
         }
+        //CHECK FOR TWO DECIMALS WITHIN A NUMBER
+        let decimalArray = valueArray[i].match(/\./g); //within each number (each item in the valueArray), look for matches with '.' and store these in an array
+       
+        if (decimalArray && decimalArray.length > 1) { //if that resulting array of decimals exists, and is >1, we have too many decimals
+          console.log('ERROR: more than one decimal'); 
+          alert('ERROR: cannot include more than one decimal in each number');
+          return false;
+        } 
         //CHECK FOR ANY OPERATORS IN EQUATION
         if (valueArray[i].match(operatorsRegEx)) { //if this is an operator
           hasAnOperator = true; //flip this bool
         }
-        //CHECK FOR TWO DECIMALS WITHIN A NUMBER
-        let decimalArray = valueArray[i].match(/\./g); //within each number (each item in the valueArray), look for matches with '.' and store these in an array
-        console.log('decimal array for', valueArray[i], 'is', decimalArray);
-        if (decimalArray && decimalArray.length > 1) { //if that resulting array of decimals is >1, we have too many decimals
-          console.log('ERROR: more than one decimal'); 
-          alert('ERROR: cannot include more than one decimal in each number');
-        } 
-      }
+      } //(cont. CHECK FOR ANY OPERATORS IN EQUATION)
       if (!hasAnOperator){ //check if this bool was ever flipped - were any of the array items an operator?
         console.log('ERROR: no operator');
         alert('ERROR: must include at least one operator');
+        return false;
       }
   } 
-  //two decimals within the same number
+  //PASS! - if we've gotten this far, all the error tests came up with good news
+  return true;
 }
 
 function getEquations() {
