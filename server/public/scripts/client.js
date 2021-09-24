@@ -57,32 +57,79 @@ function submitEquation() { //called from equals button
 
   let valArray = val.split(regExofOperators); //split the string into an array, using operators as the 'splitpoint'
   //example: '7*33/99.99' becomes ['7', '*', '3', '/', '99.99']
+
+  equationValidator(valArray);
+  //if (equationValidator(valArray)){ //run the equation through our validation function, which will check for problems like two operators in a row, etc. 
+      //if it passes, continue (send it to server, etc)
+
+      //todo - need to update everything in this if statement to work with the stretch goals:
+      // let equationToSend = {
+      //   firstNumber: firstNum,
+      //   operator: operatorSelected, //didn't need to 'get' this since it's global
+      //   secondNumber: secondNum,
+      //   answer: 0
+      // }
+    
+      // $.ajax ({ //hey ajax...
+    
+      //   method: 'POST', //do a "POST" to server
+      //   url: '/equations', //specifically, on the /equations area
+      //   data: equationToSend //send it our equation object
+    
+      // }).then ( function(response) { //if that was successful...
+    
+      //   getEquations(); //update the DOM with the history of previous equations (including this one)
+      //   $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
+      //   selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
+    
+      // }).catch ( function(err) { //if that was not successful...
+    
+      //   alert('error sending equation'); //alert us
+      //   console.log('error:', err);
+      // });
+  //}
   
+}
 
-  // let equationToSend = {
-  //   firstNumber: firstNum,
-  //   operator: operatorSelected, //didn't need to 'get' this since it's global
-  //   secondNumber: secondNum,
-  //   answer: 0
-  // }
+function equationValidator(valueArray){
+  //function that checks if an equation is valid
 
-  // $.ajax ({ //hey ajax...
+  let operatorsRegEx = /[\/\+\*\-]/; //define our list of operators
+  let hasAnOperator = false; //initialize this as false - then see for loop below
 
-  //   method: 'POST', //do a "POST" to server
-  //   url: '/equations', //specifically, on the /equations area
-  //   data: equationToSend //send it our equation object
+  //CHECK FOR BEGINS OR ENDS WITH OPERATOR
+  if(valueArray[0].match(operatorsRegEx) || valueArray[valueArray.length-1].match(operatorsRegEx) ){
+    console.log('ERROR: begins or ends with operator');
+    alert('ERROR: cannot begin or end equation with an operator');
+  }
 
-  // }).then ( function(response) { //if that was successful...
-
-  //   getEquations(); //update the DOM with the history of previous equations (including this one)
-  //   $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
-  //   selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
-
-  // }).catch ( function(err) { //if that was not successful...
-
-  //   alert('error sending equation'); //alert us
-  //   console.log('error:', err);
-  // });
+  else { //made this an else rather than running it every time - otherwise multiple errors = multiple alerts, and user can be overwhelmed?
+      for(let i=0; i<valueArray.length; i++){
+        //CHECK FOR TWO OPERATORS IN A ROW
+        if ( i!==valueArray.length-1 ) { //for all but the first item in the array, 
+          if ( valueArray[i].match(operatorsRegEx) && valueArray[i+1].match(operatorsRegEx) ){ //check if this, and the next item, are both operators
+            console.log('ERROR: two operators in a row');
+            alert('ERROR: cannot enter two operators in a row');
+          }  
+        }
+        //CHECK FOR ANY OPERATORS IN EQUATION
+        if (valueArray[i].match(operatorsRegEx)) { //if this is an operator
+          hasAnOperator = true; //flip this bool
+        }
+        //CHECK FOR TWO DECIMALS WITHIN A NUMBER
+        let decimalArray = valueArray[i].match(/\./g); //within each number (each item in the valueArray), look for matches with '.' and store these in an array
+        console.log('decimal array for', valueArray[i], 'is', decimalArray);
+        if (decimalArray && decimalArray.length > 1) { //if that resulting array of decimals is >1, we have too many decimals
+          console.log('ERROR: more than one decimal'); 
+          alert('ERROR: cannot include more than one decimal in each number');
+        } 
+      }
+      if (!hasAnOperator){ //check if this bool was ever flipped - were any of the array items an operator?
+        console.log('ERROR: no operator');
+        alert('ERROR: must include at least one operator');
+      }
+  } 
+  //two decimals within the same number
 }
 
 function getEquations() {

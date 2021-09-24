@@ -49,3 +49,4 @@ Keep a historical record of all math operations and solutions on the server. Dis
 - Deploy to Heroku!
 
   *Deploying a project makes it available to the masses and is a necessary step for which to prepare when planning a project.*
+//todo could be fun to add a CE button as well?
