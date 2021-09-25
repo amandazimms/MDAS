@@ -32,3 +32,7 @@ button {
   display: block;
   margin: 10px;
 }
+
+.math-button {
+  background-color:rgb(171, 202, 204);
+}

@@ -22,35 +22,21 @@ function addToInputField(value) {
   equationVisualizer.val(equationVal); //and (re)set the value to this new, longer value
 }
 
-
-// function selectedButtonDarker(theThis){
-//   //function to make all buttons except 'this' go back to their normal color,
-//   //and make 'this' button darker - 
-//   //shows user which math operator button is 'down' and ready to use for calculating
-//   theThis.siblings('.math-button').css('background-color', '#C7D4DA');
-//   theThis.css('background-color', '#7FA5B6');
-// }
-
 function clearFields(){
   //function to clear input fields of numbers
   $( '#equation-visualizer' ).val('')
 }
 
-
-//todo start checking from here - this is new after stretch goals
-//note - could use .split() method and use any/all of the operators as a separator,
-//then we would have all the numbers as their own spots in the array, no matter how long...  
-
 function submitEquation() { //called from equals button
   //function that collects input, puts them in an object, and sends them to server
   //it does not do the actual calculating (the server does).
 
-  let val = $( '#equation-visualizer' ).val();
+  let val = $( '#equation-visualizer' ).val(); //get val of whatever user typed in
 
   let regExofOperators = /(?=[\/\+\*\-])|(?<=[\/\+\*\-])/; //define a list of our operators using regEx
-  //breakdown of this regEx:  [] means match anything inside here. 
+  //breakdown of this regEx:  [] means match ANYthing inside here (like or's). 
                           //  every \ is escaping so that the special chars like + and / can be read as the plain old character, not a fancy js thing.
-                          //  the ?=() and ?<=() allow the .split to work by including the separator (+, *) in the resulting array.
+                          //  the ?=() and ?<=() allow the .split to work by INCLUDING the separator (+, *) in the resulting array.
                           //    this is the most liquid understanding for me now - why do we need both '?=' and '?<=' ? I don't know, but it works. 
                           //  the | works like or: match either the thing before or the thing after
                           //  regexes always start and end with /'s
@@ -59,40 +45,52 @@ function submitEquation() { //called from equals button
   //example: '7*33/99.99' becomes ['7', '*', '3', '/', '99.99']
 
   if (equationValidator(valArray)){ //run the equation through our validation function, which will check for problems like two operators in a row, etc. 
-    alert("congrats, equation is valid");
-  
-    //if it passes, continue (send it to server, etc)
+    //run the following only if the equation is valid:
+    
+    let equationToSend = equationObjectBuilder(valArray);
 
-      //todo - need to update everything in this if statement to work with the stretch goals:
-      // let equationToSend = {
-      //   firstNumber: firstNum,
-      //   operator: operatorSelected, //didn't need to 'get' this since it's global
-      //   secondNumber: secondNum,
-      //   answer: 0
-      // }
-    
-      // $.ajax ({ //hey ajax...
-    
-      //   method: 'POST', //do a "POST" to server
-      //   url: '/equations', //specifically, on the /equations area
-      //   data: equationToSend //send it our equation object
-    
-      // }).then ( function(response) { //if that was successful...
-    
-      //   getEquations(); //update the DOM with the history of previous equations (including this one)
-      //   $( '.num-input' ).val(''); //clear user input fields so they can enter another equation
-      //   selectedButtonDarker( $(this) ); //clear whichever operator button was 'down' and make '=' the dark button instead
-    
-      // }).catch ( function(err) { //if that was not successful...
-    
-      //   alert('error sending equation'); //alert us
-      //   console.log('error:', err);
-      // });
-  //}
-  }
+    $.ajax ({ //hey ajax...
+  
+      method: 'POST', //do a "POST" to server
+      url: '/equations', //specifically, on the /equations area
+      data: equationToSend //send it our equation object
+  
+      }).then ( function(response) { //if that was successful...
+  
+      getEquations(); //update the DOM with the history of previous equations (including this one)
+      $( '#equation-visualizer' ).val(''); //clear user input fields so they can enter another equation
+  
+      }).catch ( function(err) { //if that was not successful...
+  
+      alert('error sending equation'); //alert us
+      console.log('error:', err);
+    });
+  }//end if. note - we do not need an else for if the equationValidator returns false; in those cases, the validator handles the errors
 }
 
-function equationValidator(valueArray){
+function equationObjectBuilder(valueArray){ //called from within submitEquation()
+  //function that takes in an equation array, 
+  //  where numbers and operators are already neatly separated into their own array indices..
+  //and bundles it as an object with n number of properties
+  //  delineating whether the value is a number or operator. examples:
+  //  7*9.1 becomes { 0number: 7, 1operator: *, 2number: 9.1 }
+
+  let operatorsRegEx = /[\/\+\*\-]/; //define our list of operators
+  let equationObject = {}; //define an empty object to hold the resulting equation
+
+  for(let i=0; i<valueArray.length; i++){ //loop through our array of values
+    if(valueArray[i].match(operatorsRegEx)){ //if value at this index is an operator
+      const key = i+'operator'; //declare a constant named, for example, 2operator
+      equationObject[key] = valueArray[i]; //and set that as one of the properties of the object, example: 2operator: *
+    } else { //if it's a number
+      const key = i+'number'; //declare a constant named, for example, 1number
+      equationObject[key] = valueArray[i]; //and set that as one of the properties of the object, example: 1number: 7
+    } 
+  }
+  return equationObject;
+}
+
+function equationValidator(valueArray){  //called from within submitEquation()
   //function that checks if an equation is valid
 
   let operatorsRegEx = /[\/\+\*\-]/; //define our list of operators
@@ -154,7 +152,7 @@ function getEquations() {
 
     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
       equationHistory.append( //append them to this appropriate area
-        `<li>${response[i].firstNumber} ${response[i].operator} ${response[i].secondNumber} = ${response[i].answer}</li>
+        `<li>${response[i]}</li>
         `);
     };
 
@@ -165,3 +163,13 @@ function getEquations() {
 
   });
 }
+
+
+//todo - delete this - not using with stretch goals part?
+// function selectedButtonDarker(theThis){
+//   //function to make all buttons except 'this' go back to their normal color,
+//   //and make 'this' button darker - 
+//   //shows user which math operator button is 'down' and ready to use for calculating
+//   theThis.siblings('.math-button').css('background-color', '#C7D4DA');
+//   theThis.css('background-color', '#7FA5B6');
+// }
