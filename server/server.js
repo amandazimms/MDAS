@@ -25,6 +25,12 @@ app.get('/', (req, res) => { //our 2 arguments req and res (remember they're alp
 });
 
 
+//EQUTIONS-DELETE
+app.delete( '/equations', ( req, res ) => {
+  res.send('Got a DELETE request at /user');
+  equationHistory = [];
+});
+
 //EQUATIONS-GET
 app.get( '/equations', ( req, res ) => { //if I understand correctly, this is the mirror-image of our ajax "GET" to /equations...
   res.send( equationHistory );          //...you need both for it to work

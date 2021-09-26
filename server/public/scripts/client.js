@@ -4,7 +4,7 @@ let answerIsDisplayed = false;
 
 function onReady(){
   $('button').each( function(index, value) { //loop through all buttons
-    if (this.id !== "equals-button" && this.id !== "clear-button") { //(skipping these two buttons, which behave differently)
+    if (this.id !== "equals-button" && this.id !== "clear-button" && this.id !== "clear-history-button") { //(skipping these two buttons, which behave differently)
       $( `#${this.id}`).on('click', //for each one, on click, assign them to...
         { parameter: this.dataset.id }, addToInputField //run this function, with their data-id as the parameter
       );
@@ -12,6 +12,7 @@ function onReady(){
   });
   $( '#equals-button' ).on( 'click', submitEquation );
   $( '#clear-button' ).on( 'click', clearFields );
+  $( '#clear-history-button' ).on( 'click', clearHistory );
 }
 
 function addToInputField(value) {
@@ -180,11 +181,24 @@ function displayEquationsAndAnswer() {
   });
 }
 
-//todo - delete this - not using with stretch goals part?
-// function selectedButtonDarker(theThis){
-//   //function to make all buttons except 'this' go back to their normal color,
-//   //and make 'this' button darker - 
-//   //shows user which math operator button is 'down' and ready to use for calculating
-//   theThis.siblings('.math-button').css('background-color', '#C7D4DA');
-//   theThis.css('background-color', '#7FA5B6');
-// }
+function clearHistory () {
+  //function that clears the equation history
+
+  $.ajax ({ //hey ajax...
+
+    method: 'DELETE', //do a "GET" from server
+    url: '/equations' //specifically, on the /deleteequations area
+
+  }).then ( function(response) { //if that was successful...
+
+    //delete eq history from dom
+    let equationHistory = $("#equation-history"); //get the output area where we want to display things on the DOM
+    equationHistory.empty(); //empty it out from whatever was appended there last time, so we don't have any duplicating
+
+  }).catch( function(err) { //if that was not successful...
+
+    alert('error deleting equation history'); //alert us
+    console.log('error:', err)
+
+  });
+}
