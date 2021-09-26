@@ -10,7 +10,6 @@ app.use( bodyParser.urlencoded( { extended: true } ) );
 //GLOBALS
 const port = 5000; 
 let equationHistory = [];
-let currentAnswer;
 
 //SPIN UP THAT SERVER
 app.listen(port, ()=> { //we use arrow functions on server side
@@ -24,6 +23,7 @@ app.listen(port, ()=> { //we use arrow functions on server side
 app.get('/', (req, res) => { //our 2 arguments req and res (remember they're alphabetical!) to pass to this arrow function...
   console.log('get route hit'); //anytime someone goes to localhost:5000 in their browser, this will appear in our console here.
 });
+
 
 //EQUATIONS-GET
 app.get( '/equations', ( req, res ) => { //if I understand correctly, this is the mirror-image of our ajax "GET" to /equations...
@@ -59,9 +59,11 @@ app.post( '/equations', ( req, res ) => { //if I understand correctly, this is t
     }
   }
 
-  currentAnswer = equationAsArray[0];
-  let fullEquationWithAnswer = originalEquationWithoutAnswer.join('') + '=' + currentAnswer; //join together the original, along with the answer (that's now in a 1-item array), with =, to show on the DOM
-  equationHistory.push(fullEquationWithAnswer); //push the resulting string into our equation history array!
+  let thisEquation = {
+    setup: originalEquationWithoutAnswer.join(''),
+    answer: equationAsArray[0]
+  }
+  equationHistory.push(thisEquation); //push the resulting string into our equation history array!
 });
 
 threeMemberMath = (threeItemMathArray) => {

@@ -1,5 +1,7 @@
 $(document).ready(onReady);
 
+let answerIsDisplayed = false;
+
 function onReady(){
   $('button').each( function(index, value) { //loop through all buttons
     if (this.id !== "equals-button" && this.id !== "clear-button") { //(skipping these two buttons, which behave differently)
@@ -18,8 +20,18 @@ function addToInputField(value) {
   let equationVisualizer = $( '#equation-visualizer' ); //get the visualization area
   let equationVal = equationVisualizer.val(); //and its value
 
-  equationVal += value.data.parameter; //add to the end of that val, the new value (button that was just pressed)
-  equationVisualizer.val(equationVal); //and (re)set the value to this new, longer value
+  if (answerIsDisplayed && value.data.parameter.match(/[0-9]/)){ 
+    //if an answer (from previous calculation) is currently displayed and we enter a number,
+    //we expect the answer to disappear and be replaced with the new number (source: other calculators)
+    equationVal = value.data.parameter; //REPLACE that answer with the new value (button that was just pressed)
+    answerIsDisplayed = false;
+  } else {
+    //otherwise, if an answer is displayed and we input an operator, we expect to 'use' the answer as the
+    //thing before the operator (source: other calculators), so append instead of replace. same result if no answer is displayed: append.
+    equationVal += value.data.parameter; //ADD to the end of that val, the new value (button that was just pressed)
+    answerIsDisplayed = false;
+  }
+  equationVisualizer.val(equationVal); //actually set the value of equationVisualizer to this computed value.
 }
 
 function clearFields(){
@@ -57,9 +69,8 @@ function submitEquation() { //called from equals button
   
       }).then ( function(response) { //if that was successful...
   
-      getEquations(); //update the DOM with the history of previous equations (including this one)
-      $( '#equation-visualizer' ).val(''); //clear user input fields so they can enter another equation
-  
+      displayEquationsAndAnswer(); //update the DOM with answer and the history of previous equations (including this one)
+
       }).catch ( function(err) { //if that was not successful...
   
       alert('error sending equation'); //alert us
@@ -136,7 +147,7 @@ function equationValidator(valueArray){  //called from within submitEquation()
   return true;
 }
 
-function getEquations() {
+function displayEquationsAndAnswer() {
   //function that gets all the equations we've done from the server
   //and displays them on the dom like any normal calculator would ;)
 
@@ -152,9 +163,14 @@ function getEquations() {
 
     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
       equationHistory.append( //append them to this appropriate area
-        `<li>${response[i]}</li>
+        `<li>${response[i].setup} = ${response[i].answer}</li>
         `);
     };
+
+    clearFields(); //clear user input field
+    $( '#equation-visualizer' ).val( response[response.length-1].answer ); //display the answer in that field instead
+
+    answerIsDisplayed = true; //bool to show that the current content of equation-visualizer is the answer, not user input
 
   }).catch( function(err) { //if that was not successful...
 
@@ -162,27 +178,6 @@ function getEquations() {
     console.log('error:', err)
 
   });
-}
-
-function displayCurrentAnswer(){
-  //function that displays the answer of the current equation in the 'input' area of the calculator, as it is displayed on real life calculators.
-
-  $.ajax ({ //hey ajax...
-
-    method: 'GET', //do a "GET" from server
-    url: '/equations' //specifically, on the /equations area
-
-  }).then ( function(response) { //if that was successful...
-
-    //todo 
-    //empty the input area and put the currentAnswer (stored on serverside) in the input instaed.
-
-}).catch( function(err) { //if that was not successful...
-
-  alert('error displaying answer'); //alert us
-  console.log('error:', err)
-
-});
 }
 
 //todo - delete this - not using with stretch goals part?
