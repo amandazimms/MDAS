@@ -164,8 +164,11 @@ function displayEquationsAndAnswer() {
 
     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
       equationHistory.append( //append them to this appropriate area
-        `<li>${response[i].setup} = ${response[i].answer}</li>
-        `);
+        `<li>${response[i].setup} = ${response[i].answer}
+          <div class="redo-button-div">
+            <button class="redo-button" onclick="redo(${response})">REDO</button>
+          </div>  
+        </li>`);
     };
 
     clearFields(); //clear user input field
@@ -179,6 +182,10 @@ function displayEquationsAndAnswer() {
     console.log('error:', err)
 
   });
+}
+
+function redoEquation(equationObject) {
+  $( '#equation-visualizer' ).val(equationObject.setup);
 }
 
 function clearHistory () {

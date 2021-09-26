@@ -32,6 +32,14 @@ ul {
   list-style: inside;
 }
 
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  list-style: none;
+}
+
 input {
   width: 133px;
   padding: 12px;
@@ -62,4 +70,17 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.redo-button {
+  width: 65px;
+  justify-content: center;
+  align-items: center;
+}
+
+.redo-button-div {
+  /* width: 100px; */
+  top: 0;
+  right: 0;
+  display: inline-block;
 }
