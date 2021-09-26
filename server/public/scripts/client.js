@@ -24,7 +24,7 @@ function addToInputField(value) {
 
 function clearFields(){
   //function to clear input fields of numbers
-  $( '#equation-visualizer' ).val('')
+  $( '#equation-visualizer' ).val('');
 }
 
 function submitEquation() { //called from equals button
@@ -164,6 +164,26 @@ function getEquations() {
   });
 }
 
+function displayCurrentAnswer(){
+  //function that displays the answer of the current equation in the 'input' area of the calculator, as it is displayed on real life calculators.
+
+  $.ajax ({ //hey ajax...
+
+    method: 'GET', //do a "GET" from server
+    url: '/equations' //specifically, on the /equations area
+
+  }).then ( function(response) { //if that was successful...
+
+    //todo 
+    //empty the input area and put the currentAnswer (stored on serverside) in the input instaed.
+
+}).catch( function(err) { //if that was not successful...
+
+  alert('error displaying answer'); //alert us
+  console.log('error:', err)
+
+});
+}
 
 //todo - delete this - not using with stretch goals part?
 // function selectedButtonDarker(theThis){

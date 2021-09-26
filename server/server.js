@@ -10,6 +10,7 @@ app.use( bodyParser.urlencoded( { extended: true } ) );
 //GLOBALS
 const port = 5000; 
 let equationHistory = [];
+let currentAnswer;
 
 //SPIN UP THAT SERVER
 app.listen(port, ()=> { //we use arrow functions on server side
@@ -58,9 +59,9 @@ app.post( '/equations', ( req, res ) => { //if I understand correctly, this is t
     }
   }
 
-  let fullEquationWithAnswer = originalEquationWithoutAnswer.join('') + '=' + equationAsArray[0]; //join together the original, along with the answer (that's now in a 1-item array), with =, to show on the DOM
-    console.log(fullEquationWithAnswer);
-  equationHistory.push(fullEquationWithAnswer); //push the resulting object into our equation history array!
+  currentAnswer = equationAsArray[0];
+  let fullEquationWithAnswer = originalEquationWithoutAnswer.join('') + '=' + currentAnswer; //join together the original, along with the answer (that's now in a 1-item array), with =, to show on the DOM
+  equationHistory.push(fullEquationWithAnswer); //push the resulting string into our equation history array!
 });
 
 threeMemberMath = (threeItemMathArray) => {
