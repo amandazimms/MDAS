@@ -163,14 +163,18 @@ function displayEquationsAndAnswer() {
     equationHistory.empty(); //empty it out from whatever was appended there last time, so we don't have any duplicating
 
     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
+      let setup = response[i].setup;
+      let answer = response[i].answer;
+      
       equationHistory.append( //append them to this appropriate area
-        `<li>${response[i].setup} = ${response[i].answer}
+        `<li>${setup} = ${answer}
           <div class="redo-button-div">
-            <button class="redo-button" onclick="redo(${response})">REDO</button>
+            <button class="redo-button" onclick="redoEquation('${setup}')">REDO</button>
           </div>  
         </li>`);
     };
 
+    
     clearFields(); //clear user input field
     $( '#equation-visualizer' ).val( response[response.length-1].answer ); //display the answer in that field instead
 
@@ -184,8 +188,8 @@ function displayEquationsAndAnswer() {
   });
 }
 
-function redoEquation(equationObject) {
-  $( '#equation-visualizer' ).val(equationObject.setup);
+function redoEquation(equation) {
+  $( '#equation-visualizer' ).val(equation);
 }
 
 function clearHistory () {
