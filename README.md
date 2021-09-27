@@ -7,7 +7,7 @@ You've heard of PEMDAS, yes, but how about its cuter, simpler cousin, MDAS? This
 
 This calculator sends data to a server, where the math is performed and a history of equations are kept. The answer is displayed on the calculator input, and a history of past equations is shown below. You can also re-run past calculations and clear the history from the server: C, R, and D of CRUD!
 
-Deployed, fully functional version of the app here!
+[Deployed, fully functional version of the app here!](https://mdas-server-side-calculator.herokuapp.com/)
 
 ## Screenshot
 ![Screenshot](server-calculator-screenshot.png)
