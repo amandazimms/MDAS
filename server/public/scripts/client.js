@@ -164,10 +164,10 @@ function displayEquationsAndAnswer() {
 
     for (let i=0; i<response.length; i++) { //for (whatever we got back from the server - our history of equations)
       let setup = response[i].setup;
-      let answer = response[i].answer;
-      
+      let answer = response[i].answer; 
+
       equationHistory.append( //append them to this appropriate area
-        `<li>${setup} = ${answer}
+        `<li>${setup}
           <div class="redo-button-div">
             <button class="redo-button" onclick="redoEquation(${answer})">REDO</button>
           </div>  
