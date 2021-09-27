@@ -169,7 +169,7 @@ function displayEquationsAndAnswer() {
       equationHistory.append( //append them to this appropriate area
         `<li>${setup} = ${answer}
           <div class="redo-button-div">
-            <button class="redo-button" onclick="redoEquation('${setup}')">REDO</button>
+            <button class="redo-button" onclick="redoEquation(${answer})">REDO</button>
           </div>  
         </li>`);
     };
