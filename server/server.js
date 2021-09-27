@@ -11,10 +11,14 @@ app.use( bodyParser.urlencoded( { extended: true } ) );
 const port = 5000; 
 let equationHistory = [];
 
+
 //SPIN UP THAT SERVER
-app.listen(port, ()=> { //we use arrow functions on server side
-  console.log('server is up on', port); 
+    app.listen( process.env.PORT || port, () => {
+        console.log( 'server is up on:', port );
 });
+// app.listen(port, ()=> { //we use arrow functions on server side
+//   console.log('server is up on', port); 
+// });
 
 
 //ROUTES
