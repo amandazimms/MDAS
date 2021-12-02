@@ -3,7 +3,7 @@
 
 ## Description
 
-You've heard of PEMDAS, yes, but how about its cuter, simpler cousin, MDAS? This calculator can handle equations with multiple operators + - * / in any combination!
+You've heard of PEMDAS, yes, but how about its cuter, minimalist cousin, MDAS? This calculator can handle equations with multiple operators + - * / in any combination!
 
 This calculator sends data to a server, where the math is performed and a history of equations are kept. The answer is displayed on the calculator input, and a history of past equations is shown below. You can also re-run past calculations and clear the history from the server: C, R, and D of CRUD!
 
